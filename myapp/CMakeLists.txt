@@ -2,10 +2,24 @@ cmake_minimum_required (VERSION 3.2)
 
 project(myapp)
 
-include_directories("${PROJECT_SOURCE_DIR}/../mylib")
+set(GLFW_NAMES glfw3)
+set(GLFW_DIRECTORY "${PROJECT_SOURCE_DIR}/../glfw/")
 
-add_subdirectory("../mylib" "mylib/")
+FIND_LIBRARY(GLFW_LIBRARY ${GLFW_NAMES} ${GLFW_DIRECTORY})
+IF(NOT GLFW_LIBRARY)
+  MESSAGE(FATAL_ERROR "${GLFW_NAMES} not found in ${GLFW_DIRECTORY}")
+ENDIF()
+
+set(GLEW_NAMES glew32)
+set(GLEW_DIRECTORY "${PROJECT_SOURCE_DIR}/../glew/")
+
+FIND_LIBRARY(GLEW_LIBRARY ${GLEW_NAMES} ${GLEW_DIRECTORY})
+IF(NOT GLEW_LIBRARY)
+  MESSAGE(FATAL_ERROR "${GLEW_NAMES} not found in ${GLEW_DIRECTORY}")
+ENDIF()
+
+include_directories(${GLFW_DIRECTORY} ${GLEW_DIRECTORY})
 
 add_executable(myapp myapp.cpp)
 
-target_link_libraries(myapp mylib)
+target_link_libraries(myapp ${GLFW_LIBRARY} ${GLEW_LIBRARY} opengl32)
